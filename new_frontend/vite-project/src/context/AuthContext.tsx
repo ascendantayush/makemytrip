@@ -1,119 +1,217 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import type { User } from "../types"
-import { authService } from "../services/api"
-import { toast } from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
 
-interface AuthContextType {
-  user: User | null
-  loading: boolean
-  login: (email: string, password: string) => Promise<void>
-  signup: (name: string, email: string, password: string, mobile: number) => Promise<void>
-  verifyOtp: (email: string, otp: string) => Promise<void>
-  logout: () => void
-  isAuthenticated: boolean
+// Define user type
+export interface User {
+  id: string
+  name: string
+  email: string
+  mobile?: string
+  createdAt?: string
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+// Define context type
+interface AuthContextType {
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  login: (email: string, password: string) => Promise<boolean>
+  signup: (name: string, email: string, password: string, mobile: number) => Promise<boolean>
+  verifyOtp: (email: string, otp: string) => Promise<boolean>
+  logout: () => void
+  checkAuthStatus: () => Promise<void>
+}
 
+// Create context with default values
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAuthenticated: false,
+  isLoading: true,
+  login: async () => false,
+  signup: async () => false,
+  verifyOtp: async () => false,
+  logout: () => {},
+  checkAuthStatus: async () => {},
+})
+
+// Custom hook to use auth context
+export const useAuth = () => useContext(AuthContext)
+
+// Auth provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
 
+  // Check if user is already logged in on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("token")
-      if (token) {
-        try {
-          const userData = await authService.getCurrentUser()
-          setUser(userData)
-          setIsAuthenticated(true)
-        } catch (error) {
-          localStorage.removeItem("token")
-        }
-      }
-      setLoading(false)
-    }
-
-    checkAuth()
+    checkAuthStatus()
   }, [])
 
-  const login = async (email: string, password: string) => {
+  // Function to check authentication status
+  const checkAuthStatus = async () => {
+    setIsLoading(true)
     try {
-      setLoading(true)
-      const response = await authService.login({ email, password })
-      localStorage.setItem("token", response.token)
-      setUser(response.user)
-      setIsAuthenticated(true)
-      toast.success("Login successful!")
+      const token = localStorage.getItem("token")
+
+      if (!token) {
+        setUser(null)
+        setIsAuthenticated(false)
+        setIsLoading(false)
+        return
+      }
+
+      // Fetch user data with the token
+      const response = await fetch("http://localhost:5000/api/auth/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (response.ok) {
+        const userData = await response.json()
+        setUser(userData)
+        setIsAuthenticated(true)
+      } else {
+        // If token is invalid, clear it
+        localStorage.removeItem("token")
+        setUser(null)
+        setIsAuthenticated(false)
+      }
     } catch (error) {
-      toast.error("Login failed. Please check your credentials.")
-      throw error
+      console.error("Error checking auth status:", error)
+      setUser(null)
+      setIsAuthenticated(false)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
-  const signup = async (name: string, email: string, password: string, mobile: number) => {
+  // Login function
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      setLoading(true)
-      await authService.signup({ name, email, password, mobile })
-      toast.success("Signup successful! Please verify your email with the OTP sent.")
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const { token, user } = data
+
+        // Save token to localStorage
+        localStorage.setItem("token", token)
+
+        // Update state
+        setUser(user)
+        setIsAuthenticated(true)
+
+        // Show success message
+        toast.success("Login successful!")
+        return true
+      } else {
+        const errorData = await response.json()
+        toast.error(errorData.message || "Login failed")
+        return false
+      }
     } catch (error) {
-      toast.error("Signup failed. Please try again.")
-      throw error
-    } finally {
-      setLoading(false)
+      console.error("Login error:", error)
+      toast.error("An error occurred during login")
+      return false
     }
   }
 
-  const verifyOtp = async (email: string, otp: string) => {
+  // Signup function
+  const signup = async (name: string, email: string, password: string, mobile: number): Promise<boolean> => {
     try {
-      setLoading(true)
-      const response = await authService.verifyOtp({ email, otp })
-      localStorage.setItem("token", response.token)
-      setUser(response.user)
-      setIsAuthenticated(true)
-      toast.success("Email verified successfully!")
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password, mobile }),
+      })
+
+      if (response.ok) {
+        toast.success("Registration successful! Please verify your email.")
+        return true
+      } else {
+        const errorData = await response.json()
+        toast.error(errorData.message || "Registration failed")
+        return false
+      }
     } catch (error) {
-      toast.error("OTP verification failed. Please try again.")
-      throw error
-    } finally {
-      setLoading(false)
+      console.error("Signup error:", error)
+      toast.error("An error occurred during registration")
+      return false
     }
   }
 
+  // Verify OTP function
+  const verifyOtp = async (email: string, otp: string): Promise<boolean> => {
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const { token, user } = data
+
+        // Save token to localStorage
+        localStorage.setItem("token", token)
+
+        // Update state
+        setUser(user)
+        setIsAuthenticated(true)
+
+        toast.success("Email verified successfully!")
+        return true
+      } else {
+        const errorData = await response.json()
+        toast.error(errorData.message || "Verification failed")
+        return false
+      }
+    } catch (error) {
+      console.error("OTP verification error:", error)
+      toast.error("An error occurred during verification")
+      return false
+    }
+  }
+
+  // Logout function
   const logout = () => {
     localStorage.removeItem("token")
     setUser(null)
     setIsAuthenticated(false)
-    toast.success("Logged out successfully!")
+    toast.success("Logged out successfully")
+    navigate("/")
   }
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        login,
-        signup,
-        verifyOtp,
-        logout,
-        isAuthenticated,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
-}
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
+  // Context value
+  const value = {
+    user,
+    isAuthenticated,
+    isLoading,
+    login,
+    signup,
+    verifyOtp,
+    logout,
+    checkAuthStatus,
   }
-  return context
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

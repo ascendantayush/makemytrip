@@ -28,43 +28,21 @@ const LoginForm = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   })
+
   const onSubmit = async (data: LoginFormData) => {
     try {
-      setIsLoading(true);
-  
-      // Make the API call directly here
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      });
-  
-      // Check if the response is successful
-      if (response.ok) {
-        const responseData = await response.json(); // Parse the response JSON
-        console.log("Login successful:", responseData);
-  
-        const { token } = responseData; // Destructure the token from the response
-        localStorage.setItem("token", token); // Save the token in localStorage
-        navigate("/"); // Navigate to the home page
-      } else {
-        const errorData = await response.json(); // Parse the error response
-        console.error("Login failed:", errorData.message);
-        alert("Login failed: " + errorData.message);
+      setIsLoading(true)
+      const success = await login(data.email, data.password)
+
+      if (success) {
+        navigate("/")
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during login:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
-  
-  
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
