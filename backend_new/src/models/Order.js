@@ -1,56 +1,43 @@
-// backend_new/src/models/Order.js
 import mongoose from 'mongoose';
 
-const orderSchema = new mongoose.Schema({
-  flight_date: { type: String, required: true },
-  flight_status: { type: String, required: false },
-  departure: {
-    airport: { type: String, required: false },
-    timezone: { type: String, required: false },
-    iata: { type: String, required: false },
-    icao: { type: String, required: false },
-    terminal: { type: String, required: false },
-    gate: { type: String, required: false },
-    delay: { type: Number, required: false },
-    scheduled: { type: String, required: false },
-    estimated: { type: String, required: false },
-    actual: { type: String, required: false },
-    estimated_runway: { type: String, required: false },
-    actual_runway: { type: String, required: false },
+const orderSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    flight: {
+      flightNumber: { type: String, required: true },
+      airline: { type: String, required: true },
+      departureAirport: { type: String, required: true },
+      arrivalAirport: { type: String, required: true },
+      departureTime: { type: Date, required: true },
+      arrivalTime: { type: Date, required: true },
+      price: { type: Number, required: true },
+    },
+    passengers: [
+      {
+        name: { type: String, required: true },
+        email: { type: String, required: true },
+        phone: { type: String, required: true },
+      }
+    ],
+    totalAmount: { type: Number, required: true },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'completed', 'failed'],
+      default: 'pending',
+    },
+    razorpayOrderId: { type: String },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String },
   },
-  arrival: {
-    airport: { type: String, required: false },
-    timezone: { type: String, required: false },
-    iata: { type: String, required: false },
-    icao: { type: String, required: false },
-    terminal: { type: String, required: false },
-    baggage: { type: String, required: false },
-    gate: { type: String, required: false },
-    delay: { type: Number, required: false },
-    scheduled: { type: String, required: false },
-    estimated: { type: String, required: false },
-    actual: { type: String, required: false },
-    estimated_runway: { type: String, required: false },
-    actual_runway: { type: String, required: false },
-  },
-  airline: {
-    name: { type: String, required: false },
-    iata: { type: String, required: false },
-    icao: { type: String, required: false },
-  },
-  flight: {
-    aircraft: { type: String, required: false },
-    live: { type: String, required: false },
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);
 
 export default Order;
