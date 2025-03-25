@@ -35,11 +35,7 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen)
 
   return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/90 backdrop-blur-md shadow-lg" : "bg-transparent"
-      }`}
-    >
+    <nav className={`fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-lg`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
@@ -52,7 +48,7 @@ const Navbar = () => {
               <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-2 rounded-lg mr-2">
                 {/* <FiPlane className="text-white text-xl" /> */}
               </div>
-              <span className={`text-2xl font-bold ${scrolled ? "text-gray-800" : "text-white"}`}>SkyQuest</span>
+              <span className="text-2xl font-bold text-gray-800">SkyQuest</span>
             </motion.div>
           </Link>
 
@@ -63,8 +59,8 @@ const Navbar = () => {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className={`text-sm font-medium hover:text-purple-500 transition-colors relative ${
-                      location.pathname === link.path ? "text-purple-500" : scrolled ? "text-gray-800" : "text-white"
+                    className={`text-base font-medium hover:text-purple-500 transition-colors relative ${
+                      location.pathname === link.path ? "text-purple-500" : "text-gray-800"
                     }`}
                   >
                     {link.name}
@@ -86,9 +82,7 @@ const Navbar = () => {
                 <div className="flex items-center space-x-4">
                   <Link
                     to="/profile"
-                    className={`flex items-center space-x-2 text-sm font-medium ${
-                      scrolled ? "text-gray-800" : "text-white"
-                    } hover:text-purple-500`}
+                    className="flex items-center space-x-2 text-base font-medium text-gray-800 hover:text-purple-500"
                   >
                     <div className="bg-purple-100 p-1.5 rounded-full">
                       <FiUser className="text-purple-600" />
@@ -97,9 +91,7 @@ const Navbar = () => {
                   </Link>
                   <button
                     onClick={logout}
-                    className={`flex items-center space-x-1 text-sm font-medium ${
-                      scrolled ? "text-gray-800" : "text-white"
-                    } hover:text-purple-500`}
+                    className="flex items-center space-x-1 text-base font-medium text-gray-800 hover:text-purple-500"
                   >
                     <FiLogOut />
                     <span>Logout</span>
@@ -107,15 +99,12 @@ const Navbar = () => {
                 </div>
               ) : (
                 <div className="flex items-center space-x-4">
-                  <Link
-                    to="/login"
-                    className={`text-sm font-medium ${scrolled ? "text-gray-800" : "text-white"} hover:text-purple-500`}
-                  >
+                  <Link to="/login" className="text-base font-medium text-gray-800 hover:text-purple-500">
                     Login
                   </Link>
                   <Link
                     to="/signup"
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-base font-medium hover:shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
                   >
                     Sign Up
                   </Link>
@@ -126,10 +115,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button
-              onClick={toggleMenu}
-              className={`${scrolled ? "text-gray-800" : "text-white"} hover:text-purple-500 focus:outline-none`}
-            >
+            <button onClick={toggleMenu} className="text-gray-800 hover:text-purple-500 focus:outline-none">
               {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
             </button>
           </div>
@@ -151,7 +137,7 @@ const Navbar = () => {
                     <li key={link.name}>
                       <Link
                         to={link.path}
-                        className={`block text-sm font-medium hover:text-purple-500 transition-colors ${
+                        className={`block text-base font-medium hover:text-purple-500 transition-colors ${
                           location.pathname === link.path ? "text-purple-500" : "text-gray-800"
                         }`}
                         onClick={() => setIsOpen(false)}
@@ -167,7 +153,7 @@ const Navbar = () => {
                     <div className="flex flex-col space-y-4">
                       <Link
                         to="/profile"
-                        className="flex items-center space-x-2 text-sm font-medium text-gray-800 hover:text-purple-500"
+                        className="flex items-center space-x-2 text-base font-medium text-gray-800 hover:text-purple-500"
                         onClick={() => setIsOpen(false)}
                       >
                         <FiUser />
@@ -178,7 +164,7 @@ const Navbar = () => {
                           logout()
                           setIsOpen(false)
                         }}
-                        className="flex items-center space-x-2 text-sm font-medium text-gray-800 hover:text-purple-500"
+                        className="flex items-center space-x-2 text-base font-medium text-gray-800 hover:text-purple-500"
                       >
                         <FiLogOut />
                         <span>Logout</span>
@@ -188,14 +174,14 @@ const Navbar = () => {
                     <div className="flex flex-col space-y-4">
                       <Link
                         to="/login"
-                        className="text-sm font-medium text-gray-800 hover:text-purple-500"
+                        className="text-base font-medium text-gray-800 hover:text-purple-500"
                         onClick={() => setIsOpen(false)}
                       >
                         Login
                       </Link>
                       <Link
                         to="/signup"
-                        className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-medium text-center"
+                        className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-base font-medium text-center"
                         onClick={() => setIsOpen(false)}
                       >
                         Sign Up

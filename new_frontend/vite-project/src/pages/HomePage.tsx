@@ -65,7 +65,7 @@ const HomePage = () => {
     {
       name: "Sarah Johnson",
       role: "Business Traveler",
-      image: "/placeholder.svg?height=80&width=80",
+      image: "https://randomuser.me/api/portraits/women/44.jpg",
       quote:
         "SkyQuest has transformed my business travel experience. The booking process is seamless, and their customer service is exceptional.",
       rating: 5,
@@ -73,7 +73,7 @@ const HomePage = () => {
     {
       name: "Michael Chen",
       role: "Adventure Seeker",
-      image: "/placeholder.svg?height=80&width=80",
+      image: "https://randomuser.me/api/portraits/men/32.jpg",
       quote:
         "I've booked multiple international flights through SkyQuest, and they consistently offer the best prices and smoothest experience.",
       rating: 5,
@@ -81,7 +81,7 @@ const HomePage = () => {
     {
       name: "Priya Sharma",
       role: "Family Vacationer",
-      image: "/placeholder.svg?height=80&width=80",
+      image: "https://randomuser.me/api/portraits/women/68.jpg",
       quote:
         "Planning family trips is so much easier with SkyQuest. Their interface is intuitive, and they have great family package deals.",
       rating: 4,
@@ -96,7 +96,8 @@ const HomePage = () => {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/placeholder.svg?height=1080&width=1920&text=Scenic+Sky+View')",
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80')",
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/90 to-indigo-900/70"></div>
@@ -140,7 +141,7 @@ const HomePage = () => {
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
                       <img
-                        src={`/placeholder.svg?height=40&width=40&text=${i}`}
+                        src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? "men" : "women"}/${i * 10}.jpg`}
                         alt={`User ${i}`}
                         className="w-full h-full object-cover"
                       />
@@ -258,12 +259,48 @@ const HomePage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { city: "New York", country: "USA", price: "₹45,000" },
-              { city: "London", country: "UK", price: "₹52,000" },
-              { city: "Tokyo", country: "Japan", price: "₹65,000" },
-              { city: "Paris", country: "France", price: "₹48,000" },
-              { city: "Sydney", country: "Australia", price: "₹72,000" },
-              { city: "Dubai", country: "UAE", price: "₹38,000" },
+              {
+                city: "New York",
+                country: "USA",
+                price: "₹45,000",
+                image:
+                  "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+              },
+              {
+                city: "London",
+                country: "UK",
+                price: "₹52,000",
+                image:
+                  "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+              },
+              {
+                city: "Tokyo",
+                country: "Japan",
+                price: "₹65,000",
+                image:
+                  "https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+              },
+              {
+                city: "Paris",
+                country: "France",
+                price: "₹48,000",
+                image:
+                  "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+              },
+              {
+                city: "Sydney",
+                country: "Australia",
+                price: "₹72,000",
+                image:
+                  "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+              },
+              {
+                city: "Dubai",
+                country: "UAE",
+                price: "₹38,000",
+                image:
+                  "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80",
+              },
             ].map((destination, index) => (
               <motion.div
                 key={index}
@@ -275,7 +312,7 @@ const HomePage = () => {
               >
                 <div className="relative rounded-2xl overflow-hidden shadow-lg h-80">
                   <img
-                    src={`/placeholder.svg?height=400&width=600&text=${destination.city}`}
+                    src={destination.image || "/placeholder.svg"}
                     alt={destination.city}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />

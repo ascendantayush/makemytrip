@@ -10,7 +10,7 @@ import checkoutRoutes from './routes/checkoutRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import successRoutes from './routes/successRoutes.js';
-
+import authRoutes from './routes/auth.js'
 // Load environment variables
 dotenv.config();
 
@@ -29,6 +29,7 @@ app.use('/checkout', checkoutRoutes);
 app.use('/order', orderRoutes);
 app.use('/razorpay', paymentRoutes);
 app.use('/success', successRoutes);
+app.use("/api/auth", authRoutes)
 
 app.use(notFound);
 app.use(errorHandler);
