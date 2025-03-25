@@ -43,6 +43,8 @@ export const authService = {
   },
 
   verifyOtp: async (data: OtpVerification) => {
+    console.log("data")
+    console.log(data)
     const response = await api.post("/api/auth/verify-otp", data)
     return response.data
   },
