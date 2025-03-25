@@ -95,7 +95,7 @@ const SignupForm = () => {
                 <input
                   id="name"
                   type="text"
-                  className={`w-full pl-10 pr-3 py-3 border ${errors.name ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
+                  className={`w-full pl-10 pr-3 py-3 border ${errors.name ? "border-red-500" : "border-gray-300"} text-blue-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
                   placeholder="John Doe"
                   {...register("name")}
                 />
@@ -114,7 +114,7 @@ const SignupForm = () => {
                 <input
                   id="email"
                   type="email"
-                  className={`w-full pl-10 pr-3 py-3 border ${errors.email ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
+                  className={`w-full pl-10 pr-3 py-3 border ${errors.email ? "border-red-500" : "border-gray-300"} text-blue-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
                   placeholder="your@email.com"
                   {...register("email")}
                 />
@@ -133,7 +133,7 @@ const SignupForm = () => {
                 <input
                   id="mobile"
                   type="tel"
-                  className={`w-full pl-10 pr-3 py-3 border ${errors.mobile ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
+                  className={`w-full pl-10 pr-3 py-3 border ${errors.mobile ? "border-red-500" : "border-gray-300"} rounded-lg text-blue-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
                   placeholder="1234567890"
                   {...register("mobile")}
                 />
@@ -152,7 +152,7 @@ const SignupForm = () => {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  className={`w-full pl-10 pr-10 py-3 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
+                  className={`w-full pl-10 pr-10 py-3 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-lg text-blue-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
                   placeholder="••••••••"
                   {...register("password")}
                 />
@@ -182,7 +182,7 @@ const SignupForm = () => {
                 <input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
-                  className={`w-full pl-10 pr-10 py-3 border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
+                  className={`w-full pl-10 pr-10 py-3 border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-lg text-blue-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
                   placeholder="••••••••"
                   {...register("confirmPassword")}
                 />
@@ -203,7 +203,7 @@ const SignupForm = () => {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium hover:shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 flex justify-center items-center"
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 t py-3 rounded-lg font-medium hover:shadow-lg hover:from-purple-700 hover:to-indigo-700  text-white transition-all duration-300 flex justify-center items-center"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -254,7 +254,7 @@ const SignupForm = () => {
                 <input
                   id="otp"
                   type="text"
-                  className="w-full text-center text-lg tracking-widest py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  className="w-full text-center text-lg tracking-widest py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-blue-800 transition-all"
                   placeholder="Enter OTP"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
