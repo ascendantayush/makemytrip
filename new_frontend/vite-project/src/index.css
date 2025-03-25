@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+/* @font-face {
+    font-family: "VCR OSD Mono";
+    src: url("/fonts/VCR_OSD_MONO_1.001.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+} */
+
+/* @font-face {
+  font-family: "productsans";
+  src: url("/fonts/Product Sans Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} */
+/* 
+@theme {
+    --color-primary: #191C1C;
+    --color-secondary: #ffffff;
+    --color-background: #000000;
+    --font-Raleway: "Raleway", sans-serif;
+    --font-heading: "VCR OSD Mono";
+} */
+
+.bg-background {
+  background-color: #191C1C;
+  /* background-image: url("/noise.png"); */
+  /* background-repeat: repeat;
+  background-blend-mode: overlay;
+  background-size: 30vw; 
+  background-position: center; 
+  background-attachment: fixed;
+  opacity: 0.9;
+  z-index: 1000; */
+}
+
+
+::-webkit-scrollbar {
+  width: 10px; /* Scrollbar width */
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f024; /* Scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ebc1df; /* Scrollbar thumb */
+  border-radius: 30px; /* Border radius */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff; /* Hover effect */
+
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+html {
+  scroll-behavior: smooth;
+}

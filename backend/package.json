@@ -20,5 +20,6 @@
     "paytmchecksum": "^1.5.0",
     "razorpay": "^2.0.7",
     "shortid": "^2.2.16"
-  }
+  },
+  "keywords": []
 }
