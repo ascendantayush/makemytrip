@@ -82,12 +82,10 @@ router.post("/verify-otp", async (req, res) => {
     user.otp = undefined;
     user.otpExpiry = undefined;
     await user.save();
- //ayush ji add this to env later
-    JWT_SECRET = "hellohellohello"
-  
-    const token = jwt.sign({ id: user._id, email: user.email },JWT_SECRET, {
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+    
 
     res.status(200).json({
       message: "Email verified successfully.",
@@ -132,11 +130,10 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    //ayush ji add this to env later
-    JWT_SECRET = "hellohellohello"
-    const token = jwt.sign({ id: user._id, email: user.email },JWT_SECRET, {
-      expiresIn: "7d",
-    });
+   const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+  expiresIn: "7d",
+});
+
 
     res.status(200).json({
       message: "Login successful.",

@@ -28,18 +28,43 @@ const LoginForm = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   })
-
   const onSubmit = async (data: LoginFormData) => {
     try {
-      setIsLoading(true)
-      await login(data.email, data.password)
-      navigate("/")
+      setIsLoading(true);
+  
+      // Make the API call directly here
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+  
+      // Check if the response is successful
+      if (response.ok) {
+        const responseData = await response.json(); // Parse the response JSON
+        console.log("Login successful:", responseData);
+  
+        const { token } = responseData; // Destructure the token from the response
+        localStorage.setItem("token", token); // Save the token in localStorage
+        navigate("/"); // Navigate to the home page
+      } else {
+        const errorData = await response.json(); // Parse the error response
+        console.error("Login failed:", errorData.message);
+        alert("Login failed: " + errorData.message);
+      }
     } catch (error) {
-      console.error("Login error:", error)
+      console.error("Error during login:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
+  
+  
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
@@ -64,7 +89,7 @@ const LoginForm = () => {
               <input
                 id="email"
                 type="email"
-                className={`w-full pl-10 pr-3 py-3 border ${errors.email ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
+                className={`w-full pl-10 pr-3 py-3 border ${errors.email ? "border-red-500" : "border-gray-300"} text-blue-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
                 placeholder="your@email.com"
                 {...register("email")}
               />
@@ -83,7 +108,7 @@ const LoginForm = () => {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                className={`w-full pl-10 pr-10 py-3 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
+                className={`w-full pl-10 pr-10 py-3 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-lg text-blue-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`}
                 placeholder="••••••••"
                 {...register("password")}
               />

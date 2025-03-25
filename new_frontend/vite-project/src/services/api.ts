@@ -32,10 +32,21 @@ api.interceptors.request.use((config) => {
 
 // Auth services
 export const authService = {
-  login: async (credentials: LoginCredentials) => {
-    const response = await api.post("/api/auth/login", credentials)
-    return response.data
+  login: async (credentials: LoginCredentials): Promise<Response> => {
+    console.log("credentials:", credentials);
+  
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
+  
+    console.log("response:", response);
+    return response; // Simply return the raw response
   },
+  
 
   signup: async (userData: SignupData) => {
     const response = await api.post("/api/auth/register", userData)
