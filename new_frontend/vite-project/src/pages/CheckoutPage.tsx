@@ -24,18 +24,18 @@ interface Passenger {
   phone: string;
 }
 
-// Define order type
-interface Order {
-  id: string;
-  amount: number;
-  currency: string;
-  receipt: string;
-}
+// // Define order type
+// interface Order {
+//   id: string;
+//   amount: number;
+//   currency: string;
+//   receipt: string;
+// }
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [passenger, setPassenger] = useState<Passenger>({
     name: "",
