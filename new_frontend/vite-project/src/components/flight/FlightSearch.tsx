@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -52,7 +51,6 @@ const FlightSearch = () => {
   })
 
   useEffect(() => {
-    // Close suggestions when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       if (departureRef.current && !departureRef.current.contains(event.target as Node)) {
         setShowDepartureSuggestions(false)
@@ -86,24 +84,25 @@ const FlightSearch = () => {
         }
       } catch (error) {
         console.error("Error searching airports:", error)
-        // Fallback with mock data if API fails
-        const mockAirports: Airport[] = [
-          { iata: "DEL", name: "Indira Gandhi International Airport", city: "New Delhi", country: "India" },
-          { iata: "BOM", name: "Chhatrapati Shivaji International Airport", city: "Mumbai", country: "India" },
-          { iata: "BLR", name: "Kempegowda International Airport", city: "Bangalore", country: "India" },
-          { iata: "MAA", name: "Chennai International Airport", city: "Chennai", country: "India" },
-          { iata: "CCU", name: "Netaji Subhas Chandra Bose International Airport", city: "Kolkata", country: "India" },
-        ].filter(
-          (airport) =>
-            airport.iata.toLowerCase().includes(query.toLowerCase()) ||
-            airport.city.toLowerCase().includes(query.toLowerCase()) ||
-            airport.name.toLowerCase().includes(query.toLowerCase()),
-        )
 
-        if (isArrival) {
-          setArrivalAirports(mockAirports)
-        } else {
-          setDepartureAirports(mockAirports)
+        // Fallback to loading from airports.json
+        try {
+          const res = await fetch("/airports.json")
+          const mockAirports: Airport[] = await res.json()
+          const filteredAirports = mockAirports.filter(
+            (airport) =>
+              airport.iata.toLowerCase().includes(query.toLowerCase()) ||
+              airport.city.toLowerCase().includes(query.toLowerCase()) ||
+              airport.name.toLowerCase().includes(query.toLowerCase())
+          )
+
+          if (isArrival) {
+            setArrivalAirports(filteredAirports.slice(0, 5))
+          } else {
+            setDepartureAirports(filteredAirports.slice(0, 5))
+          }
+        } catch (jsonError) {
+          console.error("Error loading airports.json:", jsonError)
         }
       }
     }
@@ -161,6 +160,7 @@ const FlightSearch = () => {
     setValue("arrivalAirport", "")
     setSelectedArrivalAirport(null)
   }
+
 
   const onSubmit = async (data: SearchFormData) => {
     try {

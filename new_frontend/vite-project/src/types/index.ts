@@ -76,15 +76,21 @@ export interface Flight {
   flight: {
     iata: string
   }
+  airline: {
+    name: string;
+  };
   departure: {
     scheduled: string
     airport: string
+    iata: string
   }
   arrival: {
     scheduled: string
     airport: string
+    iata: string
   }
   price: number
+  flight_status: string;
 }
 
 export interface FlightSearchParams {

@@ -29,7 +29,7 @@ const FlightCard = ({ flight, onSelect }: FlightCardProps) => {
           <div className="flex items-center space-x-2">
             <div className="bg-white p-2 rounded-lg shadow-sm">
               <img
-                src={`/placeholder.svg?height=30&width=30&text=${flight.airline.name.charAt(0)}`}
+                src={`/download.jpg?height=30&width=30&text=${flight.airline.name.charAt(0)}`}
                 alt={flight.airline.name}
                 className="h-6 w-6 object-contain"
               />
@@ -70,11 +70,11 @@ const FlightCard = ({ flight, onSelect }: FlightCardProps) => {
             </div>
 
             <div className="absolute -bottom-6 w-full text-center">
-              <div className="text-xs font-medium px-2 py-1 rounded-full inline-block">
+              <div className="text-xs font-medium px-2 py-12 rounded-full inline-block">
                 <span
                   className={`${
                     flight.flight_status === "scheduled" ? "text-green-600 bg-green-50" : "text-orange-600 bg-orange-50"
-                  } px-2 py-0.5 rounded-full`}
+                  } px-2 -py-8 rounded-full`}
                 >
                   {flight.flight_status === "scheduled" ? "On Time" : flight.flight_status}
                 </span>

@@ -210,7 +210,7 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-slate-900 text-white mt-10 xl:mt-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <button
           onClick={() => navigate(-1)}
