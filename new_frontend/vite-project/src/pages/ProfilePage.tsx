@@ -1,60 +1,60 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
-import { useAuth } from "../context/AuthContext"
+import { motion } from "framer-motion";
 import {
-  User,
-  Mail,
-  Phone,
-  Calendar,
-  Edit,
-  Shield,
-  CreditCard,
-  MapPin,
-  Plane,
-  Bookmark,
   AlertCircle,
-} from "lucide-react"
+  Bookmark,
+  Calendar,
+  CreditCard,
+  Edit,
+  Mail,
+  MapPin,
+  Phone,
+  Plane,
+  Shield,
+  User,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 interface UserProfile {
-  _id: string
-  name: string
-  email: string
-  mobile: string
-  createdAt: string
-  isVerified: boolean
+  _id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  createdAt: string;
+  isVerified: boolean;
 }
 
 interface Booking {
-  _id: string
-  bookingReference: string
-  status: string
-  createdAt: string
+  _id: string;
+  bookingReference: string;
+  status: string;
+  createdAt: string;
   flightDetails: {
-    flightNumber: string
-    departure: string
-    arrival: string
-    departureTime: string
-    arrivalTime: string
-  }
+    flightNumber: string;
+    departure: string;
+    arrival: string;
+    departureTime: string;
+    arrivalTime: string;
+  };
   passengerDetails: {
-    name: string
-    email: string
-    phone: string
-  }
+    name: string;
+    email: string;
+    phone: string;
+  };
 }
 
 const ProfilePage = () => {
-  const { isAuthenticated, isLoading } = useAuth()
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [bookings, setBookings] = useState<Booking[]>([])
-  const [profileLoading, setProfileLoading] = useState(true)
-  const [bookingsLoading, setBookingsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const navigate = useNavigate()
-
+  const { isAuthenticated, isLoading } = useAuth();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [bookingsLoading, setBookingsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -64,7 +64,7 @@ const ProfilePage = () => {
         staggerChildren: 0.1,
       },
     },
-  }
+  };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -75,102 +75,101 @@ const ProfilePage = () => {
         duration: 0.5,
       },
     },
-  }
+  };
 
   // Fetch user profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        setProfileLoading(true)
-        const token = localStorage.getItem("token")
+        setProfileLoading(true);
+        const token = localStorage.getItem("token");
 
         if (!token) {
-          throw new Error("No authentication token found")
+          throw new Error("No authentication token found");
         }
-
-        const response = await fetch("http://localhost:5000/api/auth/me", {
+        const response = await fetch(`${API_URL}/api/auth/me`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        })
+        });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch profile data")
+          throw new Error("Failed to fetch profile data");
         }
 
-        const data = await response.json()
-        setProfile(data)
+        const data = await response.json();
+        setProfile(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred")
-        console.error("Error fetching profile:", err)
+        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching profile:", err);
       } finally {
-        setProfileLoading(false)
+        setProfileLoading(false);
       }
-    }
+    };
 
     if (isAuthenticated && !isLoading) {
-      fetchProfile()
+      fetchProfile();
     } else if (!isLoading && !isAuthenticated) {
-      navigate("/login")
+      navigate("/login");
     }
-  }, [isAuthenticated, isLoading, navigate])
+  }, [isAuthenticated, isLoading, navigate]);
 
   // Fetch bookings data
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        setBookingsLoading(true)
-        const token = localStorage.getItem("token")
+        setBookingsLoading(true);
+        const token = localStorage.getItem("token");
 
         if (!token) {
-          throw new Error("No authentication token found")
+          throw new Error("No authentication token found");
         }
 
-        const response = await fetch("http://localhost:5000/api/payment/bookings", {
+        const response = await fetch(`${API_URL}/api/payment/bookings`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        })
+        });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch bookings data")
+          throw new Error("Failed to fetch bookings data");
         }
 
-        const data = await response.json()
-        setBookings(data)
+        const data = await response.json();
+        setBookings(data);
       } catch (err) {
-        console.error("Error fetching bookings:", err)
+        console.error("Error fetching bookings:", err);
         // Don't set error state here to avoid blocking the profile display
       } finally {
-        setBookingsLoading(false)
+        setBookingsLoading(false);
       }
-    }
+    };
 
     if (isAuthenticated && !isLoading) {
-      fetchBookings()
+      fetchBookings();
     }
-  }, [isAuthenticated, isLoading])
+  }, [isAuthenticated, isLoading]);
 
   // Format date
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    }).format(date)
-  }
+    }).format(date);
+  };
 
   // Format time
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-    })
-  }
+    });
+  };
 
   if (isLoading || profileLoading) {
     return (
@@ -180,10 +179,12 @@ const ProfilePage = () => {
             <div className="absolute inset-0 rounded-full border-t-4 border-sky-400 animate-spin"></div>
             <div className="absolute inset-3 rounded-full border-2 border-sky-200 opacity-30"></div>
           </div>
-          <p className="mt-4 text-sky-400 font-medium">Loading your profile...</p>
+          <p className="mt-4 text-sky-400 font-medium">
+            Loading your profile...
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -193,7 +194,9 @@ const ProfilePage = () => {
           <div className="inline-flex items-center justify-center bg-red-900/40 p-3 rounded-full mb-4">
             <AlertCircle className="text-red-400 text-2xl" />
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">Error Loading Profile</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">
+            Error Loading Profile
+          </h2>
           <p className="text-slate-300 mb-6">{error}</p>
           <button
             onClick={() => navigate("/login")}
@@ -203,7 +206,7 @@ const ProfilePage = () => {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -221,7 +224,10 @@ const ProfilePage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-blue-600">Profile</span>
+          Your{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-blue-600">
+            Profile
+          </span>
         </motion.h1>
         <motion.p
           className="text-lg text-slate-300 max-w-3xl mx-auto"
@@ -236,7 +242,12 @@ const ProfilePage = () => {
       {/* Profile Content */}
       <div className="grid md:grid-cols-3 gap-8">
         {/* Left Column - User Info Card */}
-        <motion.div className="md:col-span-1" variants={containerVariants} initial="hidden" animate="visible">
+        <motion.div
+          className="md:col-span-1"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           <motion.div
             variants={itemVariants}
             className="bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-700 sticky top-24"
@@ -250,7 +261,9 @@ const ProfilePage = () => {
               {profile?.isVerified && (
                 <div className="inline-flex items-center mt-2 bg-green-500/20 px-3 py-1 rounded-full">
                   <Shield className="text-green-100 mr-1" size={14} />
-                  <span className="text-sm text-green-100">Verified Account</span>
+                  <span className="text-sm text-green-100">
+                    Verified Account
+                  </span>
                 </div>
               )}
             </div>
@@ -281,7 +294,11 @@ const ProfilePage = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-400">Member Since</p>
-                    <p className="text-white">{profile?.createdAt ? formatDate(profile.createdAt) : "N/A"}</p>
+                    <p className="text-white">
+                      {profile?.createdAt
+                        ? formatDate(profile.createdAt)
+                        : "N/A"}
+                    </p>
                   </div>
                 </li>
               </ul>
@@ -302,15 +319,29 @@ const ProfilePage = () => {
 
         {/* Right Column - Dashboard */}
         <div className="md:col-span-2">
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-8"
+          >
             {/* Stats Cards */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <motion.div
+              variants={itemVariants}
+              className="grid grid-cols-2 md:grid-cols-3 gap-4"
+            >
               {[
-                { icon: <Plane />, title: "Flights Booked", value: bookings.length.toString() },
+                {
+                  icon: <Plane />,
+                  title: "Flights Booked",
+                  value: bookings.length.toString(),
+                },
                 {
                   icon: <MapPin />,
                   title: "Destinations",
-                  value: new Set(bookings.map((booking) => booking.flightDetails.arrival)).size.toString(),
+                  value: new Set(
+                    bookings.map((booking) => booking.flightDetails.arrival)
+                  ).size.toString(),
                 },
                 { icon: <Bookmark />, title: "Saved Trips", value: "3" },
               ].map((stat, index) => (
@@ -321,7 +352,9 @@ const ProfilePage = () => {
                   <div className="bg-gradient-to-r from-sky-600 to-blue-600 w-12 h-12 rounded-full flex items-center justify-center text-white text-xl mx-auto mb-4">
                     {stat.icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-1">{stat.value}</h3>
+                  <h3 className="text-2xl font-bold text-white mb-1">
+                    {stat.value}
+                  </h3>
                   <p className="text-slate-400 text-sm">{stat.title}</p>
                 </div>
               ))}
@@ -333,7 +366,9 @@ const ProfilePage = () => {
               className="bg-slate-800 rounded-xl shadow-md border border-slate-700 overflow-hidden"
             >
               <div className="p-6 border-b border-slate-700">
-                <h3 className="text-xl font-semibold text-white">Recent Bookings</h3>
+                <h3 className="text-xl font-semibold text-white">
+                  Recent Bookings
+                </h3>
               </div>
 
               <div className="p-6">
@@ -350,7 +385,9 @@ const ProfilePage = () => {
                       className={`flex flex-col md:flex-row md:items-center justify-between p-4 rounded-lg ${
                         index % 2 === 0 ? "bg-slate-700/50" : "bg-slate-800"
                       }`}
-                      whileHover={{ backgroundColor: "rgba(14, 165, 233, 0.1)" }}
+                      whileHover={{
+                        backgroundColor: "rgba(14, 165, 233, 0.1)",
+                      }}
                     >
                       <div className="flex items-center mb-3 md:mb-0">
                         <div className="bg-sky-400/10 p-2 rounded-full mr-4">
@@ -358,10 +395,12 @@ const ProfilePage = () => {
                         </div>
                         <div>
                           <h4 className="font-medium text-white">
-                            {booking.flightDetails.departure} to {booking.flightDetails.arrival}
+                            {booking.flightDetails.departure} to{" "}
+                            {booking.flightDetails.arrival}
                           </h4>
                           <p className="text-sm text-slate-400">
-                            {formatDate(booking.flightDetails.departureTime)} • {booking.flightDetails.flightNumber}
+                            {formatDate(booking.flightDetails.departureTime)} •{" "}
+                            {booking.flightDetails.flightNumber}
                           </p>
                         </div>
                       </div>
@@ -380,8 +419,12 @@ const ProfilePage = () => {
                     <div className="inline-flex items-center justify-center bg-sky-400/10 p-3 rounded-full mb-4">
                       <Plane className="text-sky-400 text-2xl" />
                     </div>
-                    <h4 className="text-lg font-medium text-white mb-2">No bookings yet</h4>
-                    <p className="text-slate-400 mb-4">Start your journey by booking your first flight</p>
+                    <h4 className="text-lg font-medium text-white mb-2">
+                      No bookings yet
+                    </h4>
+                    <p className="text-slate-400 mb-4">
+                      Start your journey by booking your first flight
+                    </p>
                     <button className="bg-gradient-to-r from-sky-600 to-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
                       Book a Flight
                     </button>
@@ -396,7 +439,9 @@ const ProfilePage = () => {
               className="bg-slate-800 rounded-xl shadow-md border border-slate-700 overflow-hidden"
             >
               <div className="p-6 border-b border-slate-700">
-                <h3 className="text-xl font-semibold text-white">Payment Methods</h3>
+                <h3 className="text-xl font-semibold text-white">
+                  Payment Methods
+                </h3>
               </div>
 
               <div className="p-6">
@@ -406,7 +451,9 @@ const ProfilePage = () => {
                       <CreditCard className="text-sky-400" size={18} />
                     </div>
                     <div>
-                      <h4 className="font-medium text-white">•••• •••• •••• 4242</h4>
+                      <h4 className="font-medium text-white">
+                        •••• •••• •••• 4242
+                      </h4>
                       <p className="text-sm text-slate-400">Expires 12/25</p>
                     </div>
                   </div>
@@ -432,7 +479,9 @@ const ProfilePage = () => {
               className="bg-slate-800 rounded-xl shadow-md border border-slate-700 overflow-hidden"
             >
               <div className="p-6 border-b border-slate-700">
-                <h3 className="text-xl font-semibold text-white">Account Security</h3>
+                <h3 className="text-xl font-semibold text-white">
+                  Account Security
+                </h3>
               </div>
 
               <div className="p-6">
@@ -444,10 +493,14 @@ const ProfilePage = () => {
                       </div>
                       <div>
                         <h4 className="font-medium text-white">Password</h4>
-                        <p className="text-sm text-slate-400">Last changed 3 months ago</p>
+                        <p className="text-sm text-slate-400">
+                          Last changed 3 months ago
+                        </p>
                       </div>
                     </div>
-                    <button className="text-sky-400 hover:text-sky-300 font-medium">Change</button>
+                    <button className="text-sky-400 hover:text-sky-300 font-medium">
+                      Change
+                    </button>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -456,11 +509,17 @@ const ProfilePage = () => {
                         <Phone className="text-sky-400" size={18} />
                       </div>
                       <div>
-                        <h4 className="font-medium text-white">Two-Factor Authentication</h4>
-                        <p className="text-sm text-slate-400">Enhance your account security</p>
+                        <h4 className="font-medium text-white">
+                          Two-Factor Authentication
+                        </h4>
+                        <p className="text-sm text-slate-400">
+                          Enhance your account security
+                        </p>
                       </div>
                     </div>
-                    <button className="text-sky-400 hover:text-sky-300 font-medium">Enable</button>
+                    <button className="text-sky-400 hover:text-sky-300 font-medium">
+                      Enable
+                    </button>
                   </div>
                 </div>
               </div>
@@ -469,8 +528,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfilePage
-
+export default ProfilePage;

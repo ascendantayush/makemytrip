@@ -1,106 +1,115 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { AnimatePresence, motion } from "framer-motion"
-import { ArrowLeft, Calendar, Clock, MapPin, ChevronRight, AlertCircle, Shield, CheckCircle } from "lucide-react"
-import type { Flight } from "../types"
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Calendar,
+  CheckCircle,
+  ChevronRight,
+  Clock,
+  MapPin,
+  Shield,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import type { Flight } from "../types";
 
 // Define passenger type
 interface Passenger {
-  name: string
-  email: string
-  phone: string
+  name: string;
+  email: string;
+  phone: string;
 }
 
 // Define order type
 interface Order {
-  id: string
-  amount: number
-  currency: string
-  receipt: string
+  id: string;
+  amount: number;
+  currency: string;
+  receipt: string;
 }
 
 const CheckoutPage = () => {
-  const navigate = useNavigate()
-  const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate();
+  const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [passenger, setPassenger] = useState<Passenger>({
     name: "",
     email: "",
     phone: "",
-  })
-  const [paymentProcessing, setPaymentProcessing] = useState(false)
-  const [activeStep, setActiveStep] = useState(1)
+  });
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
 
   useEffect(() => {
     // Retrieve selected flight from session storage
-    const flightData = sessionStorage.getItem("selectedFlight")
+    const flightData = sessionStorage.getItem("selectedFlight");
     if (flightData) {
-      setSelectedFlight(JSON.parse(flightData))
+      setSelectedFlight(JSON.parse(flightData));
     } else {
-      setError("No flight selected. Please select a flight first.")
+      setError("No flight selected. Please select a flight first.");
     }
-  }, [])
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setPassenger((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
-
+    }));
+  };
+  const API_URL = import.meta.env.VITE_API_URL;
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       weekday: "short",
       day: "numeric",
       month: "short",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-    })
-  }
+    });
+  };
 
   const calculateDuration = (departure: string, arrival: string) => {
-    const departureTime = new Date(departure).getTime()
-    const arrivalTime = new Date(arrival).getTime()
-    const durationMs = arrivalTime - departureTime
-    const hours = Math.floor(durationMs / (1000 * 60 * 60))
-    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60))
-    return `${hours}h ${minutes}m`
-  }
+    const departureTime = new Date(departure).getTime();
+    const arrivalTime = new Date(arrival).getTime();
+    const durationMs = arrivalTime - departureTime;
+    const hours = Math.floor(durationMs / (1000 * 60 * 60));
+    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+  };
 
   const handleCheckout = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!selectedFlight) {
-      setError("No flight selected")
-      return
+      setError("No flight selected");
+      return;
     }
 
     // Validate passenger information
     if (!passenger.name || !passenger.email || !passenger.phone) {
-      setError("Please fill in all passenger details")
-      return
+      setError("Please fill in all passenger details");
+      return;
     }
 
     try {
-      setPaymentProcessing(true)
-      setError(null)
+      setPaymentProcessing(true);
+      setError(null);
 
       // Create order on the server
-      const response = await fetch("http://localhost:5000/api/payment/create-order", {
+      const response = await fetch(`${API_URL}/api/payment/create-order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,13 +128,13 @@ const CheckoutPage = () => {
           },
           passengerDetails: passenger,
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to create order")
+        throw new Error("Failed to create order");
       }
 
-      const orderData = await response.json()
+      const orderData = await response.json();
 
       // Initialize Razorpay
       const options = {
@@ -138,24 +147,27 @@ const CheckoutPage = () => {
         handler: async (response: any) => {
           try {
             // Verify payment on the server
-            const verifyResponse = await fetch("http://localhost:5000/api/payment/verify-payment", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              }),
-            })
+            const verifyResponse = await fetch(
+              `${API_URL}/api/payment/verify-payment`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              }
+            );
 
             if (!verifyResponse.ok) {
-              throw new Error("Payment verification failed")
+              throw new Error("Payment verification failed");
             }
 
-            const verificationData = await verifyResponse.json()
+            const verificationData = await verifyResponse.json();
 
             // Navigate to success page
             navigate("/booking-success", {
@@ -164,11 +176,11 @@ const CheckoutPage = () => {
                 flightDetails: selectedFlight,
                 passengerDetails: passenger,
               },
-            })
+            });
           } catch (error) {
-            console.error("Payment verification error:", error)
-            setError("Payment verification failed. Please contact support.")
-            setPaymentProcessing(false)
+            console.error("Payment verification error:", error);
+            setError("Payment verification failed. Please contact support.");
+            setPaymentProcessing(false);
           }
         },
         prefill: {
@@ -181,19 +193,19 @@ const CheckoutPage = () => {
         },
         modal: {
           ondismiss: () => {
-            setPaymentProcessing(false)
+            setPaymentProcessing(false);
           },
         },
-      }
+      };
 
-      const razorpay = new (window as any).Razorpay(options)
-      razorpay.open()
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
     } catch (error) {
-      console.error("Checkout error:", error)
-      setError("Failed to process payment. Please try again.")
-      setPaymentProcessing(false)
+      console.error("Checkout error:", error);
+      setError("Failed to process payment. Please try again.");
+      setPaymentProcessing(false);
     }
-  }
+  };
 
   if (!selectedFlight && !error) {
     return (
@@ -203,10 +215,12 @@ const CheckoutPage = () => {
             <div className="absolute inset-0 rounded-full border-t-4 border-sky-400 animate-spin"></div>
             <div className="absolute inset-3 rounded-full border-2 border-sky-200 opacity-30"></div>
           </div>
-          <p className="mt-4 text-sky-400 font-medium">Loading your flight details...</p>
+          <p className="mt-4 text-sky-400 font-medium">
+            Loading your flight details...
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -223,27 +237,59 @@ const CheckoutPage = () => {
         {/* Progress Steps */}
         <div className="mb-12">
           <div className="flex justify-between items-center max-w-2xl mx-auto">
-            <div className={`flex flex-col items-center ${activeStep >= 1 ? "text-sky-400" : "text-slate-500"}`}>
+            <div
+              className={`flex flex-col items-center ${
+                activeStep >= 1 ? "text-sky-400" : "text-slate-500"
+              }`}
+            >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${activeStep >= 1 ? "bg-sky-400 text-slate-900" : "bg-slate-700 text-slate-400"}`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
+                  activeStep >= 1
+                    ? "bg-sky-400 text-slate-900"
+                    : "bg-slate-700 text-slate-400"
+                }`}
               >
                 1
               </div>
               <span className="text-sm font-medium">Flight Details</span>
             </div>
-            <div className={`w-full max-w-[100px] h-1 ${activeStep >= 2 ? "bg-sky-400" : "bg-slate-700"}`}></div>
-            <div className={`flex flex-col items-center ${activeStep >= 2 ? "text-sky-400" : "text-slate-500"}`}>
+            <div
+              className={`w-full max-w-[100px] h-1 ${
+                activeStep >= 2 ? "bg-sky-400" : "bg-slate-700"
+              }`}
+            ></div>
+            <div
+              className={`flex flex-col items-center ${
+                activeStep >= 2 ? "text-sky-400" : "text-slate-500"
+              }`}
+            >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${activeStep >= 2 ? "bg-sky-400 text-slate-900" : "bg-slate-700 text-slate-400"}`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
+                  activeStep >= 2
+                    ? "bg-sky-400 text-slate-900"
+                    : "bg-slate-700 text-slate-400"
+                }`}
               >
                 2
               </div>
               <span className="text-sm font-medium">Passenger Info</span>
             </div>
-            <div className={`w-full max-w-[100px] h-1 ${activeStep >= 3 ? "bg-sky-400" : "bg-slate-700"}`}></div>
-            <div className={`flex flex-col items-center ${activeStep >= 3 ? "text-sky-400" : "text-slate-500"}`}>
+            <div
+              className={`w-full max-w-[100px] h-1 ${
+                activeStep >= 3 ? "bg-sky-400" : "bg-slate-700"
+              }`}
+            ></div>
+            <div
+              className={`flex flex-col items-center ${
+                activeStep >= 3 ? "text-sky-400" : "text-slate-500"
+              }`}
+            >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${activeStep >= 3 ? "bg-sky-400 text-slate-900" : "bg-slate-700 text-slate-400"}`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
+                  activeStep >= 3
+                    ? "bg-sky-400 text-slate-900"
+                    : "bg-slate-700 text-slate-400"
+                }`}
               >
                 3
               </div>
@@ -260,7 +306,10 @@ const CheckoutPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <AlertCircle className="text-red-400 mr-3 mt-0.5 flex-shrink-0" size={20} />
+              <AlertCircle
+                className="text-red-400 mr-3 mt-0.5 flex-shrink-0"
+                size={20}
+              />
               <p className="text-red-200">{error}</p>
             </motion.div>
           )}
@@ -282,7 +331,7 @@ const CheckoutPage = () => {
                       <span className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full mr-3">
                         {selectedFlight.flight.iata}
                       </span>
-                      SkyQuest  
+                      SkyQuest
                     </h2>
                     <div className="text-sky-100 mt-1 flex items-center">
                       <Calendar size={14} className="mr-1" />
@@ -304,7 +353,10 @@ const CheckoutPage = () => {
 
                       <div className="flex flex-col items-center px-4">
                         <div className="text-sm text-slate-400 mb-2">
-                          {calculateDuration(selectedFlight.departure.scheduled, selectedFlight.arrival.scheduled)}
+                          {calculateDuration(
+                            selectedFlight.departure.scheduled,
+                            selectedFlight.arrival.scheduled
+                          )}
                         </div>
                         <div className="relative w-32 md:w-48">
                           <div className="h-0.5 bg-slate-600 w-full"></div>
@@ -333,11 +385,16 @@ const CheckoutPage = () => {
                                 d="M21 4H6.54C6.19 4 5.89 4.21 5.76 4.54L3 11L5.76 17.46C5.89 17.79 6.19 18 6.54 18H21C21.55 18 22 17.55 22 17V5C22 4.45 21.55 4 21 4Z"
                                 fill="#0EA5E9"
                               />
-                              <path d="M3 11V13H5.76C6.11 13 6.41 12.79 6.54 12.46L9.3 6H6.54L3 11Z" fill="#0EA5E9" />
+                              <path
+                                d="M3 11V13H5.76C6.11 13 6.41 12.79 6.54 12.46L9.3 6H6.54L3 11Z"
+                                fill="#0EA5E9"
+                              />
                             </svg>
                           </motion.div>
                         </div>
-                        <div className="text-xs text-sky-400 mt-2 font-medium">Direct Flight</div>
+                        <div className="text-xs text-sky-400 mt-2 font-medium">
+                          Direct Flight
+                        </div>
                       </div>
 
                       <div className="text-center md:text-right">
@@ -357,7 +414,10 @@ const CheckoutPage = () => {
                         <span>
                           Flight duration:{" "}
                           <span className="font-medium text-white">
-                            {calculateDuration(selectedFlight.departure.scheduled, selectedFlight.arrival.scheduled)}
+                            {calculateDuration(
+                              selectedFlight.departure.scheduled,
+                              selectedFlight.arrival.scheduled
+                            )}
                           </span>
                         </span>
                       </div>
@@ -377,7 +437,10 @@ const CheckoutPage = () => {
 
                   <form className="p-6 space-y-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-slate-300 mb-2"
+                      >
                         Full Name
                       </label>
                       <input
@@ -393,7 +456,10 @@ const CheckoutPage = () => {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-slate-300 mb-2"
+                      >
                         Email Address
                       </label>
                       <input
@@ -409,7 +475,10 @@ const CheckoutPage = () => {
                     </div>
 
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-slate-300 mb-2">
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-slate-300 mb-2"
+                      >
                         Phone Number
                       </label>
                       <input
@@ -446,7 +515,9 @@ const CheckoutPage = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span className="text-slate-300">Base fare</span>
-                      <span className="font-medium">₹{(selectedFlight.price - 1200).toLocaleString()}</span>
+                      <span className="font-medium">
+                        ₹{(selectedFlight.price - 1200).toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-300">Taxes & fees</span>
@@ -454,7 +525,9 @@ const CheckoutPage = () => {
                     </div>
                     <div className="flex justify-between pt-4 border-t border-slate-700">
                       <span className="font-bold">Total</span>
-                      <span className="text-2xl font-bold text-sky-400">₹{selectedFlight.price.toLocaleString()}</span>
+                      <span className="text-2xl font-bold text-sky-400">
+                        ₹{selectedFlight.price.toLocaleString()}
+                      </span>
                     </div>
 
                     <button
@@ -508,8 +581,12 @@ const CheckoutPage = () => {
                     <CheckCircle size={16} className="text-sky-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-white mb-1">Free cancellation</h3>
-                    <p className="text-sm text-slate-400">Cancel for free within 24 hours of booking</p>
+                    <h3 className="font-medium text-white mb-1">
+                      Free cancellation
+                    </h3>
+                    <p className="text-sm text-slate-400">
+                      Cancel for free within 24 hours of booking
+                    </p>
                   </div>
                 </div>
               </div>
@@ -518,8 +595,7 @@ const CheckoutPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CheckoutPage
-
+export default CheckoutPage;
