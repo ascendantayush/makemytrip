@@ -1,44 +1,45 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import connectDB from './config/db.js';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-// Import routes
-import userRoutes from './routes/userRoutes.js';
-import orderRoutes from './routes/orderRoutes.js';
-import paymentRoutes from './routes/paymentRoutes.js';
-import authRoutes from './routes/auth.js';
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
+import connectDB from "./config/db.js"
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js"
+
+// import userRoutes from './routes/userRoutes.js';
+
+import authRoutes from "./routes/auth.js"
+import paymentRoutes from "./routes/payment.js"
+
 // Load environment variables
-dotenv.config();
+dotenv.config()
 
 // Initialize express app
-const app = express();
-const PORT = process.env.PORT || 5000;
+const app = express()
+const PORT = process.env.PORT || 5000
 
 // Middleware
-app.use(express.json());
-app.use(cors()); // Enable CORS for all origins
+app.use(express.json())
+app.use(cors()) // Enable CORS for all origins
 
 // Routes
-app.get('/', (req, res) => res.send('API is running...'));
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/payment', paymentRoutes);
+app.get("/", (req, res) => res.send("API is running..."))
+// app.use('/api/users', userRoutes);
+app.use("/api/auth", authRoutes)
+app.use("/api/payment", paymentRoutes)
 
-app.use(notFound);
-app.use(errorHandler);
+app.use(notFound)
+app.use(errorHandler)
 // Start server
 const startServer = async () => {
   try {
-    await connectDB();
+    await connectDB()
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+      console.log(`Server running on port ${PORT}`)
+    })
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1);
+    console.error(`Error: ${error.message}`)
+    process.exit(1)
   }
-};
+}
 
-export default startServer;
+export default startServer
+

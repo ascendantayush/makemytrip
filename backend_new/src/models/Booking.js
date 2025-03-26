@@ -1,40 +1,27 @@
 import mongoose from "mongoose"
 
-const orderSchema = new mongoose.Schema(
+const bookingSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    razorpayOrderId: {
-      type: String,
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
       required: true,
     },
-    razorpayPaymentId: {
-      type: String,
-    },
-    razorpaySignature: {
-      type: String,
-    },
-    amount: {
-      type: Number,
-      required: true,
-    },
-    currency: {
+    bookingReference: {
       type: String,
       required: true,
-      default: "INR",
-    },
-    receipt: {
-      type: String,
-      required: true,
+      unique: true,
     },
     status: {
       type: String,
       required: true,
-      enum: ["created", "paid", "failed"],
-      default: "created",
+      enum: ["confirmed", "cancelled"],
+      default: "confirmed",
     },
     flightDetails: {
       flightNumber: String,
@@ -54,7 +41,7 @@ const orderSchema = new mongoose.Schema(
   },
 )
 
-const Order = mongoose.models.Order || mongoose.model("Order", orderSchema)
+const Booking = mongoose.models.Booking || mongoose.model("Booking", bookingSchema)
 
-export default Order
+export default Booking
 

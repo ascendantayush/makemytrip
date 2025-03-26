@@ -25,52 +25,66 @@ export interface OtpVerification {
 }
 
 // Flight types
+// export interface Flight {
+//   flight_date: string
+//   flight_status: string
+//   departure: {
+//     airport: string
+//     timezone: string
+//     iata: string
+//     icao: string
+//     terminal: string
+//     gate: string
+//     delay: number
+//     scheduled: string
+//     estimated: string
+//     actual: string
+//     estimated_runway: string
+//     actual_runway: string
+//   }
+//   arrival: {
+//     airport: string
+//     timezone: string
+//     iata: string
+//     icao: string
+//     terminal: string
+//     baggage: string
+//     gate: string
+//     delay: number
+//     scheduled: string
+//     estimated: string
+//     actual: string
+//     estimated_runway: string
+//     actual_runway: string
+//   }
+//   airline: {
+//     name: string
+//     iata: string
+//     icao: string
+//   }
+//   flight: {
+//     number: string
+//     iata: string
+//     icao: string
+//     codeshared: null | any
+//   }
+//   aircraft: null | any
+//   live: null | any
+//   price?: number
+// }
 export interface Flight {
-  flight_date: string
-  flight_status: string
-  departure: {
-    airport: string
-    timezone: string
+  flight: {
     iata: string
-    icao: string
-    terminal: string
-    gate: string
-    delay: number
+  }
+  departure: {
     scheduled: string
-    estimated: string
-    actual: string
-    estimated_runway: string
-    actual_runway: string
+    airport: string
   }
   arrival: {
-    airport: string
-    timezone: string
-    iata: string
-    icao: string
-    terminal: string
-    baggage: string
-    gate: string
-    delay: number
     scheduled: string
-    estimated: string
-    actual: string
-    estimated_runway: string
-    actual_runway: string
+    airport: string
   }
-  airline: {
-    name: string
-    iata: string
-    icao: string
-  }
-  flight: {
-    number: string
-    iata: string
-    icao: string
-    codeshared: null | any
-  }
-  aircraft: null | any
-  live: null | any
-  price?: number
+  price: number
 }
 
 export interface FlightSearchParams {
