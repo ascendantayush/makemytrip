@@ -1,148 +1,212 @@
+"use client"
+
+import type React from "react"
+
 import { Link } from "react-router-dom"
-import { FiMail, FiPhone, FiMapPin, FiTwitter, FiInstagram, FiLinkedin } from "react-icons/fi"
-import { FaFacebookF } from "react-icons/fa"
+import { FiMail, FiPhone, FiMapPin, FiTwitter, FiInstagram, FiLinkedin, FiSend, FiArrowRight } from "react-icons/fi"
+import { FaFacebookF, FaPlane } from "react-icons/fa"
+import { motion } from "framer-motion"
+import { useState } from "react"
 
 const Footer = () => {
+  const [email, setEmail] = useState("")
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle newsletter subscription
+    console.log("Subscribed with:", email)
+    setEmail("")
+    // Show success message or toast notification
+  }
+
   return (
-    <footer className="bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 text-white pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-xl font-bold mb-4 flex items-center">
-              <span className="bg-white text-purple-600 p-1 rounded mr-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
-                </svg>
-              </span>
-              SkyQuest
-            </h3>
-            <p className="text-gray-300 mb-4">
-              Your journey to extraordinary destinations begins with us. Experience seamless flight bookings with
-              SkyQuest.
-            </p>
-            <div className="flex space-x-4">
-              <a href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors">
-                <FaFacebookF className="text-white" size={18} />
-              </a>
-              <a href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors">
-                <FiTwitter className="text-white" size={18} />
-              </a>
-              <a href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors">
-                <FiInstagram className="text-white" size={18} />
-              </a>
-              <a href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors">
-                <FiLinkedin className="text-white" size={18} />
-              </a>
+    <footer className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white pt-16 pb-8 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-10 left-10 w-64 h-64 rounded-full bg-indigo-500/5 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Number.POSITIVE_INFINITY,
+            repeatType: "reverse",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl"
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Number.POSITIVE_INFINITY,
+            repeatType: "reverse",
+            delay: 1,
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <motion.div variants={itemVariants}>
+            <div className="flex items-center mb-4">
+              <div className="bg-indigo-500/20 p-2 rounded-lg mr-2">
+                <FaPlane className="h-5 w-5 text-indigo-400" />
+              </div>
+              <h3 className="text-xl font-bold">SkyQuest</h3>
             </div>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4 border-b border-purple-500 pb-2">Quick Links</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/flights/search"
-                  className="text-gray-300 hover:text-white transition-colors flex items-center"
+            <p className="text-slate-300 mb-6 text-sm">
+              Your journey to extraordinary destinations begins with us. Experience seamless flight bookings with
+              SkyQuest, where every journey becomes a memorable adventure.
+            </p>
+            <div className="flex space-x-3">
+              {[
+                { icon: <FaFacebookF className="h-4 w-4" />, href: "#" },
+                { icon: <FiTwitter className="h-4 w-4" />, href: "#" },
+                { icon: <FiInstagram className="h-4 w-4" />, href: "#" },
+                { icon: <FiLinkedin className="h-4 w-4" />, href: "#" },
+              ].map((social, index) => (
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  className="bg-slate-800/50 hover:bg-indigo-500/20 p-2 rounded-full transition-colors"
+                  whileHover={{ y: -3, scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  Find Flights
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
+                  {social.icon}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-4 border-b border-purple-500 pb-2">Support</h3>
+          <motion.div variants={itemVariants}>
+            <h3 className="text-lg font-semibold mb-4 border-b border-slate-700 pb-2">Quick Links</h3>
             <ul className="space-y-3">
-              <li>
-                <Link to="/faq" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/refund" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <span className="bg-purple-500/20 p-1 rounded mr-2">→</span>
-                  Refund Policy
-                </Link>
-              </li>
+              {[
+                { label: "Home", href: "/" },
+                { label: "Find Flights", href: "/flights/search" },
+                { label: "About Us", href: "/about" },
+                { label: "Contact", href: "/contact" },
+              ].map((link, index) => (
+                <motion.li key={index} whileHover={{ x: 5 }}>
+                  <Link
+                    to={link.href}
+                    className="text-slate-300 hover:text-white transition-colors flex items-center group"
+                  >
+                    <span className="bg-slate-800/50 group-hover:bg-indigo-500/20 p-1 rounded mr-2 transition-colors">
+                      <FiArrowRight className="h-3 w-3" />
+                    </span>
+                    {link.label}
+                  </Link>
+                </motion.li>
+              ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-4 border-b border-purple-500 pb-2">Contact Us</h3>
+          <motion.div variants={itemVariants}>
+            <h3 className="text-lg font-semibold mb-4 border-b border-slate-700 pb-2">Support</h3>
             <ul className="space-y-3">
+              {[
+                { label: "FAQ", href: "/faq" },
+                { label: "Terms & Conditions", href: "/terms" },
+                { label: "Privacy Policy", href: "/privacy" },
+                { label: "Refund Policy", href: "/refund" },
+              ].map((link, index) => (
+                <motion.li key={index} whileHover={{ x: 5 }}>
+                  <Link
+                    to={link.href}
+                    className="text-slate-300 hover:text-white transition-colors flex items-center group"
+                  >
+                    <span className="bg-slate-800/50 group-hover:bg-indigo-500/20 p-1 rounded mr-2 transition-colors">
+                      <FiArrowRight className="h-3 w-3" />
+                    </span>
+                    {link.label}
+                  </Link>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <h3 className="text-lg font-semibold mb-4 border-b border-slate-700 pb-2">Contact Us</h3>
+            <ul className="space-y-4">
               <li className="flex items-start space-x-3">
-                <FiMapPin className="mt-1 text-purple-400 flex-shrink-0" />
-                <span className="text-gray-300">123 Sky Tower, Cloud City, Airland</span>
+                <FiMapPin className="mt-1 text-indigo-400 flex-shrink-0 h-4 w-4" />
+                <span className="text-slate-300 text-sm">123 Sky Tower, Cloud City, Airland</span>
               </li>
               <li className="flex items-center space-x-3">
-                <FiPhone className="text-purple-400 flex-shrink-0" />
-                <span className="text-gray-300">+1 234 567 8900</span>
+                <FiPhone className="text-indigo-400 flex-shrink-0 h-4 w-4" />
+                <span className="text-slate-300 text-sm">+1 234 567 8900</span>
               </li>
               <li className="flex items-center space-x-3">
-                <FiMail className="text-purple-400 flex-shrink-0" />
-                <span className="text-gray-300">info@skyquest.com</span>
+                <FiMail className="text-indigo-400 flex-shrink-0 h-4 w-4" />
+                <span className="text-slate-300 text-sm">info@skyquest.com</span>
               </li>
             </ul>
-            <div className="mt-6 bg-white/10 rounded-lg p-4">
-              <p className="text-sm text-gray-300">Subscribe to our newsletter for exclusive deals and updates</p>
-              <div className="mt-2 flex">
+
+            <div className="mt-6 bg-slate-800/50 backdrop-blur-sm rounded-lg p-4 border border-slate-700/50">
+              <p className="text-sm text-slate-300 mb-3">Subscribe for exclusive deals and updates</p>
+              <form onSubmit={handleSubmit} className="flex">
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
-                  className="flex-grow bg-white/10 border border-purple-500/30 rounded-l-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="flex-grow bg-slate-900/50 border border-slate-700 rounded-l-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
                 />
-                <button className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-r-lg text-sm font-medium hover:from-purple-700 hover:to-indigo-700 transition-colors">
-                  Join
-                </button>
-              </div>
+                <motion.button
+                  type="submit"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-r-lg text-sm font-medium transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FiSend className="h-4 w-4" />
+                </motion.button>
+              </form>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="border-t border-purple-800/50 mt-10 pt-6 text-center text-gray-400 text-sm">
+        <motion.div
+          className="border-t border-slate-800 mt-10 pt-6 text-center text-slate-400 text-sm"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+        >
           <p>&copy; {new Date().getFullYear()} SkyQuest. All rights reserved.</p>
-        </div>
+        </motion.div>
       </div>
     </footer>
   )

@@ -144,7 +144,7 @@ const BookingSuccessPage = () => {
                   <FiUser className="text-gray-500 mr-3 mt-0.5" />
                   <div>
                     <div className="text-sm text-gray-500">Passenger Name</div>
-                    <div className="font-medium">{passengerDetails.name}</div>
+                    <div className="font-medium text-blue-900 py-3.5">{passengerDetails.name}</div>
                   </div>
                 </div>
 
@@ -152,7 +152,7 @@ const BookingSuccessPage = () => {
                   <FiMail className="text-gray-500 mr-3 mt-0.5" />
                   <div>
                     <div className="text-sm text-gray-500">Email</div>
-                    <div className="font-medium">{passengerDetails.email}</div>
+                    <div className="font-medium text-blue-900 py-3.5">{passengerDetails.email}</div>
                   </div>
                 </div>
 
@@ -160,7 +160,7 @@ const BookingSuccessPage = () => {
                   <FiPhone className="text-gray-500 mr-3 mt-0.5" />
                   <div>
                     <div className="text-sm text-gray-500">Phone</div>
-                    <div className="font-medium">{passengerDetails.phone}</div>
+                    <div className="font-medium text-blue-900 py-3.5">{passengerDetails.phone}</div>
                   </div>
                 </div>
               </div>
@@ -187,7 +187,7 @@ const BookingSuccessPage = () => {
         </div>
 
         <div className="text-center text-sm text-gray-500">
-          <p>Thank you for choosing SkyWings Airlines!</p>
+          <p>Thank you for choosing SkyQuest  !</p>
           <p className="mt-1">For any assistance, please contact our customer support.</p>
         </div>
       </div>
