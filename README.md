@@ -1,7 +1,7 @@
 # SkyQuest - Flight Booking Website
 
 ## About SkyQuest
-SkyQuest is a seamless and user-friendly flight booking platform that allows users to search, compare, and book flights effortlessly. Designed for convenience and efficiency, SkyQuest provides real-time flight information, secure payment options, and a smooth booking experience.
+SkyQuest is a seamless and user-friendly flight booking platform that allows users to search, compare, and book flights effortlessly. Designed for convenience and efficiency, SkyQuest provides real-time flight information, secure payment options, and a smooth booking experience!
 
 ## Features
 - 🔎 **Flight Search**: Find flights based on destination, date, and price.
